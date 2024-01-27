@@ -3,106 +3,56 @@ import Modal from './Modal';
 import { Link } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
 
-function AddToCart({ handleClose }) {
+function AddToCart({ handleClose, cart, handleRemoveItem }) {
   return (
     <Modal>
       <div className="bg-white shadow-lg overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 bg-gray-200">
-          <h1 className="text-lg font-bold">Shopping Cart (3 items)</h1>
+          <h1 className="text-lg font-bold">
+            Shopping Cart ({`${cart.length} ${cart.length > 1 ? 'items' : 'item'}`})
+          </h1>
           <div onClick={handleClose} className="text-gray-600">
             X
           </div>
         </div>
         <div className="p-4 overflow-scroll h-64">
-          <div className="flex flex-col mb-4 w-full">
-            <div className="flex items-center">
-              <img
-                className="h-16 w-16 rounded object-contain mr-4"
-                src="https://picsum.photos/200/200"
-                alt="Product"
-              />
-              <div className="flex-1">
-                <h2 className="text-lg font-bold">Product Title</h2>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">1 unit</span>
-                  <div className="flex justify-end gap-2">
-                    <div className="text-gray-600 hover:text-red-500">$29.99</div>
-                    <button>
-                      <FaTrash />
-                    </button>
+          {cart.map((item, index) => {
+            return (
+              <div key={item.id} className={`flex flex-col w-full ${cart.length !== index + 1 ? ' mb-4' : ''}`}>
+                <div className="flex items-center">
+                  <img
+                    className="h-16 w-16 rounded object-contain mr-4"
+                    src={item.product.images.length > 0 ? item.product.images[0] : ''}
+                    alt={item.product.title}
+                  />
+                  <div className="flex-1">
+                    <h2 className="text-lg font-bold">{item.product.title}</h2>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">{`${item.quantity} ${
+                        item.quantity > 1 ? 'units' : 'unit'
+                      }`}</span>
+                      <div className="flex justify-end gap-2">
+                        <div className="text-gray-600 hover:text-red-500">${item.product.price}</div>
+                        <button onClick={() => handleRemoveItem(item.product)}>
+                          <FaTrash />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="flex flex-col mb-4 w-full">
-            <div className="flex items-center">
-              <img
-                className="h-16 w-16 rounded object-contain mr-4"
-                src="https://picsum.photos/200/200"
-                alt="Product"
-              />
-              <div className="flex-1">
-                <h2 className="text-lg font-bold">Product Title</h2>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">1 unit</span>
-                  <div className="flex justify-end gap-2">
-                    <div className="text-gray-600 hover:text-red-500">$29.99</div>
-                    <button>
-                      <FaTrash />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col mb-4 w-full">
-            <div className="flex items-center">
-              <img
-                className="h-16 w-16 rounded object-contain mr-4"
-                src="https://picsum.photos/200/200"
-                alt="Product"
-              />
-              <div className="flex-1">
-                <h2 className="text-lg font-bold">Product Title</h2>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">1 unit</span>
-                  <div className="flex justify-end gap-2">
-                    <div className="text-gray-600 hover:text-red-500">$29.99</div>
-                    <button>
-                      <FaTrash />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col w-full">
-            <div className="flex items-center">
-              <img
-                className="h-16 w-16 rounded object-contain mr-4"
-                src="https://picsum.photos/200/200"
-                alt="Product"
-              />
-              <div className="flex-1">
-                <h2 className="text-lg font-bold">Product Title</h2>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">1 unit</span>
-                  <div className="flex justify-end gap-2">
-                    <div className="text-gray-600 hover:text-red-500">$29.99</div>
-                    <button>
-                      <FaTrash />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
         <div className="px-4 py-3 bg-gray-200">
           <div className="flex justify-between items-center">
             <span className="font-bold text-lg">Total:</span>
-            <span className="font-bold text-lg">$74.97</span>
+            <span className="font-bold text-lg">
+              $
+              {cart.reduce((sum, item) => {
+                return sum + item.product.price;
+              }, 0)}
+            </span>
           </div>
           <div className="flex flex-col lg:flex-row items-center gap-2 pt-4">
             <Link className="border w-full rounded bg-black text-center p-2 text-white" to="/checkout">

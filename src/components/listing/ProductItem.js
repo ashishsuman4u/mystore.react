@@ -2,7 +2,14 @@ import React from 'react';
 import { FaShoppingCart } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
-function ProductItem({ product }) {
+function ProductItem({ product, cart, handleAddItem, handleRemoveItem }) {
+  const isItemInCart = (productId) => {
+    const item = cart.filter((c) => c.id === productId);
+    return item.length !== 0;
+  };
+  const handleClick = (e) => {
+    isItemInCart(product.id) ? handleRemoveItem(product) : handleAddItem(product, 1);
+  };
   return (
     <div className="lg:w-1/4 md:w-1/2 p-4 w-full lg:my-4">
       <Link to={`/product/${product.id}`} className="block relative h-72 rounded overflow-hidden">
@@ -18,9 +25,14 @@ function ProductItem({ product }) {
           <h2>{product.title}</h2>
           <p>${product.price}</p>
         </div>
-        <button className="flex gap-4 items-center justify-center p-3 mt-2 border rounded bg-black text-white w-full">
+        <button
+          onClick={handleClick}
+          className={`flex gap-4 items-center justify-center p-3 mt-2 border rounded  text-white w-full ${
+            isItemInCart(product.id) ? 'bg-red-400' : 'bg-black'
+          }`}
+        >
           <FaShoppingCart className="text-3xl" />
-          <span className="text-xl">Add to Cart</span>
+          <span className="text-xl">{isItemInCart(product.id) ? 'Remove from Cart' : 'Add to Cart'}</span>
         </button>
       </div>
     </div>
