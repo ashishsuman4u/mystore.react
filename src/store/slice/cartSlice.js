@@ -25,9 +25,20 @@ const cartSlice = createSlice({
         };
       },
     },
-    updateQuantityInCart(state, action) {
-      const index = state.findIndex((s) => s.id === action.payload.id);
-      state[index] = action.payload;
+    updateQuantityInCart: {
+      reducer(state, action) {
+        const index = state.findIndex((s) => s.id === action.payload.id);
+        state[index] = action.payload;
+      },
+      prepare(product, quantity) {
+        return {
+          payload: {
+            id: product.id,
+            product,
+            quantity,
+          },
+        };
+      },
     },
     removeItemFromCart(state, action) {
       const index = state.findIndex((s) => s.id === action.payload.id);

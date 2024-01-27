@@ -2,6 +2,7 @@ import React from 'react';
 import Modal from './Modal';
 import { Link } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
+import { currencyFormatter } from '../../helper/formatter';
 
 function AddToCart({ handleClose, cart, handleRemoveItem }) {
   return (
@@ -11,7 +12,7 @@ function AddToCart({ handleClose, cart, handleRemoveItem }) {
           <h1 className="text-lg font-bold">
             Shopping Cart ({`${cart.length} ${cart.length > 1 ? 'items' : 'item'}`})
           </h1>
-          <div onClick={handleClose} className="text-gray-600">
+          <div onClick={handleClose} className="text-gray-600 cursor-pointer">
             X
           </div>
         </div>
@@ -32,7 +33,9 @@ function AddToCart({ handleClose, cart, handleRemoveItem }) {
                         item.quantity > 1 ? 'units' : 'unit'
                       }`}</span>
                       <div className="flex justify-end gap-2">
-                        <div className="text-gray-600 hover:text-red-500">${item.product.price}</div>
+                        <div className="text-gray-600 hover:text-red-500">
+                          {currencyFormatter.format(item.product.price)}
+                        </div>
                         <button onClick={() => handleRemoveItem(item.product)}>
                           <FaTrash />
                         </button>
@@ -48,10 +51,11 @@ function AddToCart({ handleClose, cart, handleRemoveItem }) {
           <div className="flex justify-between items-center">
             <span className="font-bold text-lg">Total:</span>
             <span className="font-bold text-lg">
-              $
-              {cart.reduce((sum, item) => {
-                return sum + item.product.price;
-              }, 0)}
+              {currencyFormatter.format(
+                cart.reduce((sum, item) => {
+                  return sum + item.product.price * item.quantity;
+                }, 0)
+              )}
             </span>
           </div>
           <div className="flex flex-col lg:flex-row items-center gap-2 pt-4">
