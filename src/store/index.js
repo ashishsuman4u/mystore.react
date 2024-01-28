@@ -18,4 +18,10 @@ export const store = configureStore({
 setupListeners(store.dispatch);
 export { useFetchProductsQuery, useFetchProductByIDQuery } from './apis/productApi';
 export { selectAllCategories, selectCategoryById, getCategories } from './slice/categorySlice';
-export { addItemToCart, removeItemFromCart, updateQuantityInCart } from './slice/cartSlice';
+export {
+  addItemToCart,
+  removeItemFromCart,
+  updateQuantityInCart,
+  updateAddress,
+  updateShipping,
+} from './slice/cartSlice';

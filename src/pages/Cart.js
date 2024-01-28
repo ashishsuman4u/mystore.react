@@ -11,10 +11,6 @@ function Cart(props) {
     return state.cart;
   });
 
-  const totalCartValue = cart.reduce((sum, item) => {
-    return sum + item.product.price * item.quantity;
-  }, 0);
-
   const handleQuantityDecrease = (cartItem) => {
     const quantity = cartItem.quantity - 1;
     if (quantity === 0) {
@@ -43,7 +39,7 @@ function Cart(props) {
             <div className="px-4 py-6 sm:px-8 sm:py-10">
               <div className="flow-root">
                 <ul className="-my-8">
-                  {cart.map((item) => {
+                  {cart.items.map((item) => {
                     return (
                       <li
                         key={item.id}
@@ -57,7 +53,9 @@ function Cart(props) {
                           />
                           <div className="">
                             <p className="text-base font-semibold text-gray-900">{item.product.title}</p>
-                            <p className="mx-0 mt-1 mb-0 text-sm text-gray-400">{item.product.category.name}</p>
+                            <p className="mx-0 mt-1 mb-0 text-sm text-gray-400 uppercase">
+                              {item.product.category.name}
+                            </p>
                           </div>
                         </div>
 
@@ -101,20 +99,18 @@ function Cart(props) {
               <div className="mt-6 border-t border-b py-2">
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-400">Subtotal</p>
-                  <p className="text-lg font-semibold text-gray-900">{currencyFormatter.format(totalCartValue)}</p>
+                  <p className="text-lg font-semibold text-gray-900">{currencyFormatter.format(cart.totalValue)}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-400">Shipping</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {currencyFormatter.format(process.env.REACT_APP_NORMAL_SHIPPING_COST)}
-                  </p>
+                  <p className="text-lg font-semibold text-gray-900">{currencyFormatter.format(cart.shippingValue)}</p>
                 </div>
               </div>
               <div className="mt-6 flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-900">Total</p>
                 <p className="text-2xl font-semibold text-gray-900">
                   <span className="text-xs font-normal text-gray-400">USD</span>{' '}
-                  {currencyFormatter.format(totalCartValue + +process.env.REACT_APP_NORMAL_SHIPPING_COST)}
+                  {currencyFormatter.format(cart.totalValue + cart.shippingValue)}
                 </p>
               </div>
 
@@ -124,7 +120,7 @@ function Cart(props) {
                   type="button"
                   className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out focus:shadow hover:bg-gray-800"
                 >
-                  Checkout <FaArrowRight />
+                  Proceed to Checkout
                 </Link>
               </div>
             </div>

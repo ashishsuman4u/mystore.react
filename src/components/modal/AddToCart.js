@@ -10,16 +10,16 @@ function AddToCart({ handleClose, cart, handleRemoveItem }) {
       <div className="bg-white shadow-lg overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 bg-gray-200">
           <h1 className="text-lg font-bold">
-            Shopping Cart ({`${cart.length} ${cart.length > 1 ? 'items' : 'item'}`})
+            Shopping Cart ({`${cart.items.length} ${cart.items.length > 1 ? 'items' : 'item'}`})
           </h1>
           <div onClick={handleClose} className="text-gray-600 cursor-pointer">
             X
           </div>
         </div>
         <div className="p-4 overflow-scroll h-64">
-          {cart.map((item, index) => {
+          {cart.items.map((item, index) => {
             return (
-              <div key={item.id} className={`flex flex-col w-full ${cart.length !== index + 1 ? ' mb-4' : ''}`}>
+              <div key={item.id} className={`flex flex-col w-full ${cart.items.length !== index + 1 ? ' mb-4' : ''}`}>
                 <div className="flex items-center">
                   <img
                     className="h-16 w-16 rounded object-contain mr-4"
@@ -50,13 +50,7 @@ function AddToCart({ handleClose, cart, handleRemoveItem }) {
         <div className="px-4 py-3 bg-gray-200">
           <div className="flex justify-between items-center">
             <span className="font-bold text-lg">Total:</span>
-            <span className="font-bold text-lg">
-              {currencyFormatter.format(
-                cart.reduce((sum, item) => {
-                  return sum + item.product.price * item.quantity;
-                }, 0)
-              )}
-            </span>
+            <span className="font-bold text-lg">{currencyFormatter.format(cart.totalValue)}</span>
           </div>
           <div className="flex flex-col lg:flex-row items-center gap-2 pt-4">
             <Link className="border w-full rounded bg-black text-center p-2 text-white" to="/checkout">

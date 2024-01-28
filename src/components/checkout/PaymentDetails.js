@@ -3,7 +3,7 @@ import { MdAlternateEmail } from 'react-icons/md';
 
 function PaymentDetails(props) {
   return (
-    <div className="mt-10 bg-gray-50 px-4 pt-8 lg:mt-0">
+    <>
       <p className="text-xl font-medium">Payment Details</p>
       <p className="text-gray-400">Complete your order by providing your payment details.</p>
       <div className="">
@@ -140,7 +140,7 @@ function PaymentDetails(props) {
         </div>
       </div>
       <button className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white">Place Order</button>
-    </div>
+    </>
   );
 }
 

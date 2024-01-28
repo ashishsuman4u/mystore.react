@@ -14,7 +14,7 @@ function Header() {
       </Link>
       <nav className="text-3xl flex gap-4 items-end">
         <Link to="/cart" className="flex flex-col items-end">
-          <span className="text-xs">{cart.length}</span>
+          <span className="text-xs">{cart.items.length}</span>
           <FaShoppingCart />
         </Link>
         <Link to="/user">

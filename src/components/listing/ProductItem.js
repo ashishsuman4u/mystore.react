@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 function ProductItem({ product, cart, handleAddItem, handleRemoveItem }) {
   const isItemInCart = (productId) => {
-    const item = cart.filter((c) => c.id === productId);
+    const item = cart.items.filter((c) => c.id === productId);
     return item.length !== 0;
   };
   const handleClick = (e) => {
