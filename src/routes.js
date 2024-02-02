@@ -5,6 +5,7 @@ import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Login from './pages/Login';
+import React from 'react';
 
 export const routeConfiguration = [
   {

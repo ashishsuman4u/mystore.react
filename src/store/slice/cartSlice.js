@@ -92,11 +92,6 @@ const cartSlice = createSlice({
       state.shippingValue = action.payload.shippingValue;
     },
   },
-  extraReducers(builder) {
-    // builder.addCase(reset, (state, action) => {
-    //   return [];
-    // });
-  },
 });
 
 export const { addItemToCart, removeItemFromCart, updateQuantityInCart, updateAddress, updateShipping } =

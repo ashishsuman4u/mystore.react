@@ -3,7 +3,7 @@ import { redirect, useParams } from 'react-router-dom';
 import { FaFacebookF, FaTwitter, FaInstagram, FaShoppingCart, FaHeart } from 'react-icons/fa';
 import { useFetchProductByIDQuery } from '../store';
 
-function ProductDetails({ hideBreadcrumb }) {
+function ProductDetails() {
   let { id } = useParams();
   if (!parseInt(id)) {
     redirect('/');

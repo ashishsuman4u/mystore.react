@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Card(props) {
+function Card() {
   return (
     <div className="lg:w-1/4 md:w-1/2 p-4 w-full lg:my-4">
       <div className="w-full h-72 bg-gray-300 rounded dark:bg-gray-600"></div>

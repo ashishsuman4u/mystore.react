@@ -5,7 +5,6 @@ import { selectAllCategories } from '../../store';
 function Categories({ category, setCategory }) {
   const data = useSelector(selectAllCategories);
 
-  console.log(data);
   return (
     <select
       id="category"

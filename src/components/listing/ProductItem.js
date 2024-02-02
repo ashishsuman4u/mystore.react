@@ -7,7 +7,7 @@ function ProductItem({ product, cart, handleAddItem, handleRemoveItem }) {
     const item = cart.items.filter((c) => c.id === productId);
     return item.length !== 0;
   };
-  const handleClick = (e) => {
+  const handleClick = () => {
     isItemInCart(product.id) ? handleRemoveItem(product) : handleAddItem(product, 1);
   };
   return (

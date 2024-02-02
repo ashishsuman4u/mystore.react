@@ -3,7 +3,7 @@ import { Link, useLocation, matchRoutes } from 'react-router-dom';
 import { FaHome, FaChevronRight } from 'react-icons/fa';
 import router, { routeConfiguration } from '../../routes';
 
-function Breadcrumb(props) {
+function Breadcrumb() {
   const location = useLocation();
 
   const renderPath = () => {

@@ -7,7 +7,7 @@ function ShippingMethods({ cart, handleChange }) {
       <form className="mt-5 flex flex-col gap-4">
         <label
           className="standard-checked:border-2 standard-checked:border-gray-700 standard-checked:bg-gray-50 rounded-lg border border-gray-300 p-4 w-full flex items-center justify-between cursor-pointer"
-          for="standard"
+          htmlFor="standard"
         >
           <div className="ml-5">
             <span className="mt-2 font-semibold">Fedex Standard</span>
@@ -25,7 +25,7 @@ function ShippingMethods({ cart, handleChange }) {
         </label>
         <label
           className="express-checked:border-2 express-checked:border-gray-700 express-checked:bg-gray-50 rounded-lg border border-gray-300 p-4 w-full flex items-center justify-between cursor-pointer"
-          for="express"
+          htmlFor="express"
         >
           <div className="ml-5">
             <span className="mt-2 font-semibold">Fedex Express</span>

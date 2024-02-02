@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { FaTrash, FaArrowRight } from 'react-icons/fa';
+import { FaTrash } from 'react-icons/fa';
 import { removeItemFromCart, updateQuantityInCart } from '../store';
 import { currencyFormatter } from '../helper/formatter';
 
-function Cart(props) {
+function Cart() {
   const dispatch = useDispatch();
   const cart = useSelector((state) => {
     return state.cart;

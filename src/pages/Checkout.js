@@ -9,7 +9,7 @@ import PaymentDetails from '../components/checkout/PaymentDetails';
 import RedirectToShop from '../components/modal/RedirectToShop';
 // import { currencyFormatter } from '../helper/formatter';
 
-function Checkout(props) {
+function Checkout() {
   const [showShipping, setShowShipping] = useState(true);
   const dispatch = useDispatch();
   const cart = useSelector((state) => {
@@ -48,7 +48,7 @@ function Checkout(props) {
             <p className="text-gray-400">Check your items. And select a suitable shipping method.</p>
             <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
               {cart.items.map((item) => {
-                return <CartItem item={item} />;
+                return <CartItem key={item.id} item={item} />;
               })}
             </div>
 

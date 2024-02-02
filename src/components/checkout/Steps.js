@@ -24,9 +24,9 @@ function Steps({ showShipping, setShowShipping }) {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  strokeWidth="2"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </Link>
               <span className="font-semibold text-gray-900">Shop</span>
@@ -37,9 +37,9 @@ function Steps({ showShipping, setShowShipping }) {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="2"
+              strokeWidth="2"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
             <li className="flex items-center space-x-3 text-left sm:space-x-4">
               <button className={completeCSS} onClick={() => setShowShipping(true)}>
@@ -52,9 +52,9 @@ function Steps({ showShipping, setShowShipping }) {
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
-                    stroke-width="2"
+                    strokeWidth="2"
                   >
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 )}
               </button>
@@ -66,9 +66,9 @@ function Steps({ showShipping, setShowShipping }) {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="2"
+              strokeWidth="2"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
             <li className="flex items-center space-x-3 text-left sm:space-x-4">
               <a

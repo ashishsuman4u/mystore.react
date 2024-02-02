@@ -6,6 +6,6 @@ const categoryApiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://api.escuelajs.co/api/v1/',
   }),
-  endpoints: (builder) => ({}),
+  endpoints: () => ({}),
 });
 export { categoryApiSlice };

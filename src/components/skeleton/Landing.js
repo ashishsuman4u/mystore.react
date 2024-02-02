@@ -1,7 +1,7 @@
 import React from 'react';
 import Card from './Card';
 
-function Landing(props) {
+function Landing() {
   return (
     <section className="bg-white dark:bg-gray-900">
       <div className="animate-pulse">

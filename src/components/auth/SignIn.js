@@ -1,6 +1,6 @@
 import React from 'react';
 
-function SignIn(props) {
+function SignIn() {
   return (
     <div className="lg:w-[28rem] mx-auto my-auto flex flex-col justify-center pt-8 md:justify-start md:px-6">
       <h2 className="mt-2 text-center text-black text-2xl font-bold">Welcome to My Store</h2>
@@ -43,7 +43,7 @@ function SignIn(props) {
       </form>
       <div className="py-12 text-center">
         <p className="whitespace-nowrap text-gray-600">
-          Don't have an account?{' '}
+          Dont have an account?{' '}
           <a href="#" className="underline-offset-4 font-semibold text-gray-900 underline">
             Sign up.
           </a>
