@@ -14,7 +14,6 @@ function Home() {
     pageNumber = parseInt(searchParams.get('page'));
   }
   const location = useLocation();
-  console.log(location.search.replace(`?page=${pageNumber}`, ''));
   const { data, error, isFetching } = useFetchProductsQuery({
     page: pageNumber,
     filter: location.search.replace(`?page=${pageNumber}`, ''),
@@ -29,8 +28,8 @@ function Home() {
     <>
       <Filters searchParams={searchParams} setSearchParams={setSearchParams} />
       <main>
-        <ProductList products={data} />
-        <Pagination count={data.length} pageNumber={pageNumber} />
+        <ProductList products={data.items} />
+        <Pagination total={data.total} pageNumber={pageNumber} />
       </main>
     </>
   );

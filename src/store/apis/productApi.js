@@ -5,7 +5,7 @@ const PAGE_SIZE = 8;
 const productApiSlice = createApi({
   reducerPath: 'productApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://api.escuelajs.co/api/v1/',
+    baseUrl: '/api/',
   }),
   keepUnusedDataFor: 1200, //20 min
   endpoints(builder) {
@@ -24,7 +24,7 @@ const productApiSlice = createApi({
       fetchProductByID: builder.query({
         query: (id) => {
           return {
-            url: `/products/${id}`,
+            url: `/product/${id}`,
             method: 'GET',
           };
         },

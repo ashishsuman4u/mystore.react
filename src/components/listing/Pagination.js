@@ -2,13 +2,13 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 
-function Pagination({ count, pageNumber }) {
+function Pagination({ total, pageNumber }) {
   const { search } = useLocation();
   const prevClassNames = classNames('inline-flex items-center justify-center w-24 h-8 py-0 border rounded-md shadow', {
     'pointer-events-none text-gray-300': pageNumber === 1,
   });
   const nextClassNames = classNames('inline-flex items-center justify-center w-24 h-8 py-0 border rounded-md shadow', {
-    'pointer-events-none text-gray-300': count < 8,
+    'pointer-events-none text-gray-300': total <= pageNumber * 8,
   });
   return (
     <div className="flex items-center justify-center gap-4 text-base py-8">
@@ -36,7 +36,7 @@ function Pagination({ count, pageNumber }) {
         to={`/?page=${pageNumber + 1}${search.replace(`?page=${pageNumber}`, '')}`}
         title="next"
         type="button"
-        disabled={count < 8}
+        disabled={total <= pageNumber * 8}
         className={nextClassNames}
       >
         Next{' '}
