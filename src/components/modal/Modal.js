@@ -17,7 +17,7 @@ function Modal({ onClose, children, actionBar }) {
         </div>
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
         <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-          <div className="sm:flex sm:items-start">{children}</div>
+          {children}
           <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">{actionBar}</div>
         </div>
       </div>
