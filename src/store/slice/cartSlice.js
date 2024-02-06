@@ -78,7 +78,7 @@ const cartSlice = createSlice({
       },
     },
     removeItemFromCart(state, action) {
-      const index = state.findIndex((s) => s.id === action.payload.id);
+      const index = state.items.findIndex((s) => s.id === action.payload.id);
       state.items.splice(index, 1);
       state.totalValue = state.items.reduce((sum, item) => {
         return sum + item.product.price * item.quantity;
