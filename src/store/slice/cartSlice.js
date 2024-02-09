@@ -1,4 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
+import * as _ from 'lodash';
+import { signout } from '../actions/index';
 
 // const cartObj = {
 //   items: [
@@ -9,10 +11,10 @@ import { createSlice } from '@reduxjs/toolkit';
 //     },
 //   ],
 //   totalValue: 232,
-//   shippingType: "Standard", //Standard|Express
+//   shippingType: 'Standard', //Standard|Express
 //   shippingValue: 10,
-//   address: {
-//     name: 'John Doe',
+//   shippingAddress: {
+//     fullName: 'John Doe',
 //     streetLine1: 'abc street',
 //     streetLine2: 'block xyz',
 //     city: 'New York',
@@ -21,26 +23,29 @@ import { createSlice } from '@reduxjs/toolkit';
 //     countryCode: 'US',
 //     zip: '10001',
 //   },
+//   checkoutSessionId: null, //null|string
 // };
+
+const initialState = {
+  items: [],
+  totalValue: 0,
+  shippingType: 'Standard',
+  shippingValue: parseInt(process.env.REACT_APP_STANDARD_SHIPPING_COST),
+  shippingAddress: {
+    fullName: '',
+    streetLine1: '',
+    streetLine2: '',
+    city: '',
+    state: '',
+    country: '',
+    countryCode: '',
+    zip: '',
+  },
+};
 
 const cartSlice = createSlice({
   name: 'cart',
-  initialState: {
-    items: [],
-    totalValue: 0,
-    shippingType: 'Standard',
-    shippingValue: parseInt(process.env.REACT_APP_STANDARD_SHIPPING_COST),
-    address: {
-      name: '',
-      streetLine1: '',
-      streetLine2: '',
-      city: '',
-      state: '',
-      country: '',
-      countryCode: '',
-      zip: '',
-    },
-  },
+  initialState,
   reducers: {
     addItemToCart: {
       reducer(state, action) {
@@ -58,6 +63,17 @@ const cartSlice = createSlice({
           },
         };
       },
+    },
+    initialiseCartFromDB(state, action) {
+      state.items.push(...action.payload);
+      state.items = Object.values(Array.from(_(state.items).groupBy('id'))).map((x) => ({
+        id: x[0].id,
+        product: x[0].product,
+        quantity: x.length,
+      }));
+      state.totalValue = state.items.reduce((sum, item) => {
+        return sum + item.product.price * item.quantity;
+      }, 0);
     },
     updateQuantityInCart: {
       reducer(state, action) {
@@ -85,15 +101,25 @@ const cartSlice = createSlice({
       }, 0);
     },
     updateAddress(state, action) {
-      state.address = action.payload;
+      state.shippingAddress = action.payload;
     },
     updateShipping(state, action) {
       state.shippingType = action.payload.shippingType;
       state.shippingValue = action.payload.shippingValue;
     },
   },
+  extraReducers(builder) {
+    builder.addCase(signout, () => initialState);
+  },
 });
 
-export const { addItemToCart, removeItemFromCart, updateQuantityInCart, updateAddress, updateShipping } =
-  cartSlice.actions;
+export const {
+  addItemToCart,
+  initialiseCartFromDB,
+  removeItemFromCart,
+  updateQuantityInCart,
+  updateAddress,
+  updateShipping,
+  reset,
+} = cartSlice.actions;
 export const cartReducer = cartSlice.reducer;

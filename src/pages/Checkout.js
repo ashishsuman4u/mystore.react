@@ -7,6 +7,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { updateAddress, updateShipping } from '../store';
 import PaymentDetails from '../components/checkout/PaymentDetails';
 import RedirectToShop from '../components/modal/RedirectToShop';
+import { getDoc, doc, setDoc } from 'firebase/firestore';
+import { db } from '../config/firebase';
 // import { currencyFormatter } from '../helper/formatter';
 
 function Checkout() {
@@ -15,10 +17,27 @@ function Checkout() {
   const cart = useSelector((state) => {
     return state.cart;
   });
+  const auth = useSelector((state) => {
+    return state.auth;
+  });
   const [showModal] = useState(cart.items.length === 0);
+  if (auth.currentUser && !cart.shippingAddress?.fullName) {
+    getDoc(doc(db, 'users', auth.currentUser.uid)).then((user) => {
+      if (user.exists()) {
+        dispatch(updateAddress(user.get('address')));
+      }
+    });
+  }
 
-  const handleAddress = (address) => {
+  const handleAddress = async (address) => {
     dispatch(updateAddress(address));
+    if (address.saveAddress === 'yes') {
+      setDoc(doc(db, 'users', auth.currentUser.uid), {
+        address,
+      }).then((user) => {
+        console.log(user);
+      });
+    }
     setShowShipping(false);
   };
 
@@ -33,14 +52,10 @@ function Checkout() {
       })
     );
   };
-
-  // const totalCartValue = cart.reduce((sum, item) => {
-  //   return sum + item.product.price * item.quantity;
-  // }, 0);
   return (
     <>
       {showModal && <RedirectToShop />}
-      <div className="py-8">
+      <main className="py-8">
         <Steps showShipping={showShipping} setShowShipping={setShowShipping} />
         <div className="flex flex-col lg:flex-row">
           <div className="px-4 pt-8 lg:w-1/2">
@@ -55,11 +70,13 @@ function Checkout() {
             <ShippingMethods cart={cart} handleChange={handleShipping} />
           </div>
           <div className="mt-10 bg-gray-50 px-4 pt-8 lg:mt-0 lg:w-1/2">
-            {showShipping && <ShippingDetails handleAddress={handleAddress} setShowShipping={setShowShipping} />}
+            {showShipping && (
+              <ShippingDetails cart={cart} handleAddress={handleAddress} setShowShipping={setShowShipping} />
+            )}
             {!showShipping && <PaymentDetails />}
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }

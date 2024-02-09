@@ -14,7 +14,9 @@ function CartItem({ item }) {
           <span className="font-semibold">{item.product.title}</span>
           <span className=" text-gray-400 uppercase">{item.product.category.name}</span>
         </div>
-        <p className="text-lg font-bold">{currencyFormatter.format(item.product.price)}</p>
+        <p className="text-md font-bold">
+          {item.quantity} X {currencyFormatter.format(item.product.price)}
+        </p>
       </div>
     </div>
   );

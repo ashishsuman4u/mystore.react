@@ -1,5 +1,5 @@
-import products from './dataset/products.json';
-import categories from './dataset/categories.json';
+import products from '../dataset/products.json';
+import categories from '../dataset/categories.json';
 import * as _ from 'lodash';
 
 export default async function handler(request, response) {

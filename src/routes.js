@@ -4,8 +4,11 @@ import Layout from './Layout';
 import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import Static from './pages/Static';
 import Login from './pages/Login';
 import React from 'react';
+import ProtectedRoute from './ProtectedRoute';
+import PaymentProcessor from './pages/PaymentProcessor';
 
 export const routeConfiguration = [
   {
@@ -14,6 +17,38 @@ export const routeConfiguration = [
     component: <Home />,
     isDynamicRoute: false,
     isAuthenticated: true,
+    isFullScreen: false,
+  },
+  {
+    name: 'Payment Processing',
+    path: '/payment-processing',
+    component: <PaymentProcessor />,
+    isDynamicRoute: false,
+    isAuthenticated: true,
+    isFullScreen: true,
+  },
+  {
+    name: 'Support',
+    path: '/support',
+    component: <Static type="support" />,
+    isDynamicRoute: false,
+    isAuthenticated: false,
+    isFullScreen: false,
+  },
+  {
+    name: 'Terms',
+    path: '/terms',
+    component: <Static type="terms" />,
+    isDynamicRoute: false,
+    isAuthenticated: false,
+    isFullScreen: false,
+  },
+  {
+    name: 'Privacy',
+    path: '/privacy',
+    component: <Static type="privacy" />,
+    isDynamicRoute: false,
+    isAuthenticated: false,
     isFullScreen: false,
   },
   {
@@ -37,7 +72,7 @@ export const routeConfiguration = [
     path: '/checkout',
     component: <Checkout />,
     isDynamicRoute: false,
-    isAuthenticated: false,
+    isAuthenticated: true,
     isFullScreen: false,
   },
   {
@@ -60,9 +95,20 @@ export const routeConfiguration = [
 
 export default createBrowserRouter(
   routeConfiguration.map((config) => {
-    return {
-      path: config.path,
-      element: <Layout hideBreadcrumb={config.isFullScreen}>{config.component}</Layout>,
-    };
+    if (config.isAuthenticated) {
+      return {
+        path: config.path,
+        element: (
+          <Layout hideBreadcrumb={config.isFullScreen}>
+            <ProtectedRoute path={config.path}>{config.component}</ProtectedRoute>
+          </Layout>
+        ),
+      };
+    } else {
+      return {
+        path: config.path,
+        element: <Layout hideBreadcrumb={config.isFullScreen}>{config.component}</Layout>,
+      };
+    }
   })
 );
