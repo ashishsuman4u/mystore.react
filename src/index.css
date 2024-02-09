@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.static h3 {
+    font-weight: bold;
+}
+
+.static ol {
+    padding-left: 1.5rem;
+    list-style: decimal;
+    counter-reset: item;
+}
+.static ol > li > ol {
+    list-style: lower-alpha;
+}
+.static li {
+    counter-increment: item;
+    margin-bottom: 5px;
+}

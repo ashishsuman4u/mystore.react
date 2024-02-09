@@ -4,7 +4,7 @@ import { FaQuoteLeft, FaQuoteRight } from 'react-icons/fa';
 
 function Login() {
   return (
-    <div className="flex flex-wrap min-h-screen h-full">
+    <main className="flex flex-wrap min-h-screen h-full">
       <div className="flex w-full flex-col md:w-1/2">
         <SignIn />
       </div>
@@ -30,7 +30,7 @@ function Login() {
           alt="cloudy mountains"
         />
       </div>
-    </div>
+    </main>
   );
 }
 
