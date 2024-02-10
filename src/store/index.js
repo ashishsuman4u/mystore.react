@@ -35,7 +35,8 @@ export {
   updateQuantityInCart,
   updateAddress,
   updateShipping,
-  reset,
+  updateOrderId,
+  resetCart,
 } from './slice/cartSlice';
 export { signIn, logout } from './slice/authSlice';
 export { signout } from './actions';

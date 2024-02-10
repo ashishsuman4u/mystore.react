@@ -9,6 +9,8 @@ import Login from './pages/Login';
 import React from 'react';
 import ProtectedRoute from './ProtectedRoute';
 import PaymentProcessor from './pages/PaymentProcessor';
+import Confirmation from './pages/Confirmation';
+import NotFound from './pages/NotFound';
 
 export const routeConfiguration = [
   {
@@ -20,9 +22,25 @@ export const routeConfiguration = [
     isFullScreen: false,
   },
   {
+    name: 'Not Found',
+    path: '/404',
+    component: <NotFound />,
+    isDynamicRoute: false,
+    isAuthenticated: false,
+    isFullScreen: true,
+  },
+  {
     name: 'Payment Processing',
     path: '/payment-processing',
     component: <PaymentProcessor />,
+    isDynamicRoute: false,
+    isAuthenticated: true,
+    isFullScreen: true,
+  },
+  {
+    name: 'Confirm Order',
+    path: '/confirmation',
+    component: <Confirmation />,
     isDynamicRoute: false,
     isAuthenticated: true,
     isFullScreen: true,

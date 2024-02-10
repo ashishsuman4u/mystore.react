@@ -2,31 +2,30 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { auth, db } from '../../config/firebase';
+import { auth } from '../../config/firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { initialiseCartFromDB, signIn } from '../../store';
-import { doc, getDoc } from 'firebase/firestore';
+import { fetchData } from '../../helpers';
 
 function SignIn() {
   const authUser = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  let location = useLocation();
   useEffect(() => {
     if (authUser.currentUser && !location.state) {
       navigate('/', { replace: true });
     }
   });
 
-  let location = useLocation();
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
     try {
       const result = await signInWithEmailAndPassword(auth, data.email, data.password);
       dispatch(signIn(result.user));
-      const cart = await getDoc(doc(db, 'carts', result.user.uid));
-      if (cart.exists()) {
-        console.log(cart.get('items'));
-        dispatch(initialiseCartFromDB(cart.get('items')));
+      const cartItems = await fetchData('carts', result.user.uid, 'items');
+      if (cartItems) {
+        dispatch(initialiseCartFromDB(cartItems));
       }
       navigate(location.state && location.state.returnUrl ? location.state.returnUrl : '/', { replace: true });
     } catch (error) {

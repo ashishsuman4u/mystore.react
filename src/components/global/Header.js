@@ -1,14 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaShoppingCart, FaRegUser, FaPowerOff } from 'react-icons/fa';
-import { auth, db } from '../../config/firebase';
+import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
 import { signout } from '../../store';
 import { clearStorage } from '../../sessionStorage';
-import { Timestamp, doc, setDoc } from 'firebase/firestore';
+import { saveData } from '../../helpers';
 
 function Header() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const cart = useSelector((state) => {
     return state.cart;
@@ -20,12 +21,14 @@ function Header() {
 
   const handleSignOut = async (e) => {
     e.preventDefault();
+
     if (cart.items.length > 0) {
-      await setDoc(doc(db, 'carts', auth.currentUser.uid), { items: cart.items, timestamp: Timestamp.now() });
+      await saveData('carts', auth.currentUser.uid, { items: cart.items });
     }
     await signOut(auth);
     dispatch(signout());
     clearStorage();
+    navigate('/');
   };
   return (
     <header className="bg-black text-white p-2 flex justify-between items-center shadow-sm">
@@ -34,7 +37,7 @@ function Header() {
       </Link>
       <nav className="text-3xl flex gap-4 items-end">
         <Link to="/cart" className="flex flex-col items-end">
-          <span className="text-xs">{cart.items.length}</span>
+          <span className="text-xs">{cart.items.reduce((acc, cur) => acc + cur.quantity, 0)}</span>
           <FaShoppingCart />
         </Link>
         <Link to="/dashboard">

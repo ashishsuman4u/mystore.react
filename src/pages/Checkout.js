@@ -4,12 +4,10 @@ import ShippingDetails from '../components/checkout/ShippingDetails';
 import CartItem from '../components/checkout/CartItem';
 import Steps from '../components/checkout/Steps';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateAddress, updateShipping } from '../store';
-import PaymentDetails from '../components/checkout/PaymentDetails';
+import { updateAddress, updateOrderId, updateShipping } from '../store';
 import RedirectToShop from '../components/modal/RedirectToShop';
-import { getDoc, doc, setDoc } from 'firebase/firestore';
-import { db } from '../config/firebase';
-// import { currencyFormatter } from '../helper/formatter';
+import { fetchData, generateCheckoutSession, saveData } from '../helpers';
+import { removeData } from '../helpers/firestore';
 
 function Checkout() {
   const [showShipping, setShowShipping] = useState(true);
@@ -22,41 +20,52 @@ function Checkout() {
   });
   const [showModal] = useState(cart.items.length === 0);
   if (auth.currentUser && !cart.shippingAddress?.fullName) {
-    getDoc(doc(db, 'users', auth.currentUser.uid)).then((user) => {
-      if (user.exists()) {
-        dispatch(updateAddress(user.get('address')));
+    fetchData('users', auth.currentUser.uid, 'address').then((address) => {
+      if (address) {
+        dispatch(updateAddress(address));
       }
     });
   }
 
-  const handleAddress = async (address) => {
-    dispatch(updateAddress(address));
-    if (address.saveAddress === 'yes') {
-      setDoc(doc(db, 'users', auth.currentUser.uid), {
-        address,
-      }).then((user) => {
-        console.log(user);
+  const redirectToCheckout = async (userId, orderId) => {
+    const session = await generateCheckoutSession({
+      items: cart.items.map((item) => {
+        return { id: item.id, quantity: item.quantity };
+      }),
+      callbackUrl: 'payment-processing',
+      shippingType: cart.shippingType,
+      address: cart.shippingAddress,
+      userId,
+      orderId,
+    });
+    if (session) {
+      dispatch(updateOrderId(session.orderId));
+      await removeData('carts', auth.currentUser.uid);
+      const stripe = window.Stripe(session.stripePublicKey);
+      stripe.redirectToCheckout({
+        sessionId: session.stripeCheckoutSessionId,
       });
     }
-    setShowShipping(false);
   };
 
-  const handleShipping = (shippingType) => {
-    dispatch(
-      updateShipping({
-        shippingType,
-        shippingValue:
-          shippingType === 'Standard'
-            ? parseInt(process.env.REACT_APP_STANDARD_SHIPPING_COST)
-            : parseInt(process.env.REACT_APP_EXPRESS_SHIPPING_COST),
-      })
-    );
+  const handleAddress = async (address) => {
+    console.log('address', address);
+    setShowShipping(false);
+    dispatch(updateAddress(address));
+    if (address.saveAddress === 'yes') {
+      await saveData('users', auth.currentUser.uid, { ...auth.currentUser, address });
+    }
+    await redirectToCheckout(auth.currentUser.uid, cart.orderId);
+  };
+
+  const handleShipping = async (shippingType) => {
+    dispatch(updateShipping(shippingType));
   };
   return (
     <>
       {showModal && <RedirectToShop />}
       <main className="py-8">
-        <Steps showShipping={showShipping} setShowShipping={setShowShipping} />
+        <Steps showShipping={showShipping} />
         <div className="flex flex-col lg:flex-row">
           <div className="px-4 pt-8 lg:w-1/2">
             <p className="text-xl font-medium">Order Summary</p>
@@ -66,14 +75,10 @@ function Checkout() {
                 return <CartItem key={item.id} item={item} />;
               })}
             </div>
-
             <ShippingMethods cart={cart} handleChange={handleShipping} />
           </div>
           <div className="mt-10 bg-gray-50 px-4 pt-8 lg:mt-0 lg:w-1/2">
-            {showShipping && (
-              <ShippingDetails cart={cart} handleAddress={handleAddress} setShowShipping={setShowShipping} />
-            )}
-            {!showShipping && <PaymentDetails />}
+            <ShippingDetails cart={cart} handleAddress={handleAddress} setShowShipping={setShowShipping} />
           </div>
         </div>
       </main>

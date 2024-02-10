@@ -23,6 +23,7 @@ import { signout } from '../actions/index';
 //     countryCode: 'US',
 //     zip: '10001',
 //   },
+//   orderId: "",
 //   checkoutSessionId: null, //null|string
 // };
 
@@ -41,6 +42,7 @@ const initialState = {
     countryCode: '',
     zip: '',
   },
+  orderId: '',
 };
 
 const cartSlice = createSlice({
@@ -104,9 +106,16 @@ const cartSlice = createSlice({
       state.shippingAddress = action.payload;
     },
     updateShipping(state, action) {
-      state.shippingType = action.payload.shippingType;
-      state.shippingValue = action.payload.shippingValue;
+      state.shippingType = action.payload;
+      state.shippingValue =
+        action.payload === 'Standard'
+          ? parseInt(process.env.REACT_APP_STANDARD_SHIPPING_COST)
+          : parseInt(process.env.REACT_APP_EXPRESS_SHIPPING_COST);
     },
+    updateOrderId(state, action) {
+      state.orderId = action.payload;
+    },
+    resetCart: () => initialState,
   },
   extraReducers(builder) {
     builder.addCase(signout, () => initialState);
@@ -120,6 +129,7 @@ export const {
   updateQuantityInCart,
   updateAddress,
   updateShipping,
-  reset,
+  updateOrderId,
+  resetCart,
 } = cartSlice.actions;
 export const cartReducer = cartSlice.reducer;

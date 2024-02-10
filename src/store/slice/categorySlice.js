@@ -18,7 +18,6 @@ export const extendedCategorySlice = categoryApiSlice.injectEndpoints({
 });
 
 export const getCategories = extendedCategorySlice.endpoints.getCategories;
-// export const selectCategoriesResult = getCategories.select();
 const selectCategoriesData = createSelector(getCategories.select(), (categoriesResult) => categoriesResult.data);
 
 export const { selectAll: selectAllCategories, selectById: selectCategoryById } = categoriesAdapter.getSelectors(

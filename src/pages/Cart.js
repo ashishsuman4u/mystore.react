@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { FaTrash } from 'react-icons/fa';
 import { removeItemFromCart, updateQuantityInCart } from '../store';
-import { currencyFormatter } from '../helper/formatter';
+import { formatPrice } from '../helpers';
 import RedirectToShop from '../components/modal/RedirectToShop';
 
 function Cart() {
@@ -83,7 +83,7 @@ function Cart() {
                             </div>
                             <div className="flex flex-row items-center gap-2">
                               <p className="text-base font-semibold text-gray-900">
-                                {currencyFormatter.format(item.quantity * item.product.price)}
+                                {formatPrice(item.quantity * item.product.price)}
                               </p>
                               <button
                                 type="button"
@@ -103,20 +103,18 @@ function Cart() {
                 <div className="mt-6 border-t border-b py-2">
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-gray-400">Subtotal</p>
-                    <p className="text-lg font-semibold text-gray-900">{currencyFormatter.format(cart.totalValue)}</p>
+                    <p className="text-lg font-semibold text-gray-900">{formatPrice(cart.totalValue)}</p>
                   </div>
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-gray-400">Shipping</p>
-                    <p className="text-lg font-semibold text-gray-900">
-                      {currencyFormatter.format(cart.shippingValue)}
-                    </p>
+                    <p className="text-lg font-semibold text-gray-900">{formatPrice(cart.shippingValue)}</p>
                   </div>
                 </div>
                 <div className="mt-6 flex items-center justify-between">
                   <p className="text-sm font-medium text-gray-900">Total</p>
                   <p className="text-2xl font-semibold text-gray-900">
                     <span className="text-xs font-normal text-gray-400">USD</span>{' '}
-                    {currencyFormatter.format(cart.totalValue + cart.shippingValue)}
+                    {formatPrice(cart.totalValue + cart.shippingValue)}
                   </p>
                 </div>
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { currencyFormatter } from '../../helper/formatter';
+import { formatPrice } from '../../helpers/formatter';
 
 function CartItem({ item }) {
   return (
@@ -15,7 +15,7 @@ function CartItem({ item }) {
           <span className=" text-gray-400 uppercase">{item.product.category.name}</span>
         </div>
         <p className="text-md font-bold">
-          {item.quantity} X {currencyFormatter.format(item.product.price)}
+          {item.quantity} X {formatPrice(item.product.price)}
         </p>
       </div>
     </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from './Modal';
 import { Link } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
-import { currencyFormatter } from '../../helper/formatter';
+import { formatPrice } from '../../helpers';
 
 function AddToCart({ handleClose, cart, handleRemoveItem }) {
   return (
@@ -33,9 +33,7 @@ function AddToCart({ handleClose, cart, handleRemoveItem }) {
                         item.quantity > 1 ? 'units' : 'unit'
                       }`}</span>
                       <div className="flex justify-end gap-2">
-                        <div className="text-gray-600 hover:text-red-500">
-                          {currencyFormatter.format(item.product.price)}
-                        </div>
+                        <div className="text-gray-600 hover:text-red-500">{formatPrice(item.product.price)}</div>
                         <button onClick={() => handleRemoveItem(item.product)}>
                           <FaTrash />
                         </button>
@@ -50,7 +48,7 @@ function AddToCart({ handleClose, cart, handleRemoveItem }) {
         <div className="px-4 py-3 bg-gray-200">
           <div className="flex justify-between items-center">
             <span className="font-bold text-lg">Total:</span>
-            <span className="font-bold text-lg">{currencyFormatter.format(cart.totalValue)}</span>
+            <span className="font-bold text-lg">{formatPrice(cart.totalValue)}</span>
           </div>
           <div className="flex flex-col lg:flex-row items-center gap-2 pt-4">
             <Link className="border w-full rounded bg-black text-center p-2 text-white" to="/checkout">

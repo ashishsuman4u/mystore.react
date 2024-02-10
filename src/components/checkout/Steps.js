@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import classname from 'classnames';
 
-function Steps({ showShipping, setShowShipping }) {
+function Steps({ showShipping }) {
   const completeCSS = classname(
     !showShipping
       ? 'flex h-6 w-6 items-center justify-center rounded-full bg-emerald-200 text-xs font-semibold text-emerald-700 cursor-pointer'
@@ -42,7 +42,7 @@ function Steps({ showShipping, setShowShipping }) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
             <li className="flex items-center space-x-3 text-left sm:space-x-4">
-              <button className={completeCSS} onClick={() => setShowShipping(true)}>
+              <button className={completeCSS}>
                 {showShipping ? (
                   '2'
                 ) : (

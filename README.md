@@ -18,3 +18,9 @@ I always love to use Vercel for deploying reactjs and nextjs projects. They have
 # Live url
 
 https://mystore-react.vercel.app/
+
+# Test users for testing the websites
+
+testuser1@test.com / P@ssw0rd
+testuser2@test.com / P@ssw0rd
+testuser3@test.com / P@ssw0rd
