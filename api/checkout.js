@@ -29,7 +29,6 @@ export default async function handler(request, response) {
       }
       const user = await getDocData(`users/${request.body.userId}`);
       if (user && order) {
-        const stripeCustomerId = user ? user.stripeCustomerId : undefined;
         const purchaseSession = await db.collection('purchaseSessions').doc();
 
         const checkoutSessionData = {
@@ -37,6 +36,7 @@ export default async function handler(request, response) {
           created: Timestamp.now(),
           userId: request.body.userId,
           orderId: order.id,
+          stripeCustomerId: user.stripeCustomerId,
         };
 
         await purchaseSession.set(checkoutSessionData);
@@ -48,13 +48,7 @@ export default async function handler(request, response) {
           };
         });
         await saveOrder(order, orderItems, request.body, user.email);
-        const sessionConfig = setupPurchaseSession(
-          user,
-          orderItems,
-          request.body,
-          purchaseSession.id,
-          stripeCustomerId
-        );
+        const sessionConfig = setupPurchaseSession(user, orderItems, request.body, purchaseSession.id);
         const session = await stripeClient.checkout.sessions.create(sessionConfig);
 
         return response.status(200).json({
@@ -88,8 +82,8 @@ async function saveOrder(order, orderItems, reqBody, email) {
   await order.set(orderData);
 }
 
-function setupPurchaseSession(user, orderItems, reqBody, sessionId, stripeCustomerId) {
-  const config = setupBaseSessionConfig(user, reqBody, sessionId, stripeCustomerId);
+function setupPurchaseSession(user, orderItems, reqBody, sessionId) {
+  const config = setupBaseSessionConfig(user, reqBody, sessionId);
   config.line_items = orderItems.map((item) => {
     return {
       price_data: {
@@ -109,8 +103,6 @@ function setupPurchaseSession(user, orderItems, reqBody, sessionId, stripeCustom
 
 function setupBaseSessionConfig(user, reqBody, sessionId) {
   const config = {
-    customer_email: user.email,
-    customer_creation: 'always',
     payment_method_types: ['card'],
     success_url: `${process.env.STRIPE_CALLBACK_URL}/?purchaseResult=success&ongoingPurchaseSessionId=${sessionId}`,
     cancel_url: `${process.env.STRIPE_CALLBACK_URL}/?purchaseResult=failed`,
@@ -135,6 +127,11 @@ function setupBaseSessionConfig(user, reqBody, sessionId) {
       allowed_countries: ['US'],
     },
   };
-
+  if (user.stripeCustomerId) {
+    config.customer = user.stripeCustomerId;
+  } else {
+    config.customer_email = user.email;
+    config.customer_creation = 'always';
+  }
   return config;
 }
