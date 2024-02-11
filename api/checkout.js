@@ -47,7 +47,7 @@ export default async function handler(request, response) {
             product: { ...product, images: product.images.split(',') },
           };
         });
-        await saveOrder(order, orderItems, request.body, user.email);
+        await saveOrder(order, orderItems, request.body, user);
         const sessionConfig = setupPurchaseSession(user, orderItems, request.body, purchaseSession.id);
         const session = await stripeClient.checkout.sessions.create(sessionConfig);
 
@@ -64,10 +64,11 @@ export default async function handler(request, response) {
   }
 }
 
-async function saveOrder(order, orderItems, reqBody, email) {
+async function saveOrder(order, orderItems, reqBody, user) {
   const orderData = {
     items: orderItems,
-    email,
+    userId: user.uid,
+    email: user.email,
     shippingAddress: reqBody.address,
     shippingType: reqBody.shippingType,
     shippingValue:
