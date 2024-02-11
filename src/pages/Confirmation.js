@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { formatPrice, fetchData } from '../helpers';
-import { useSelector } from 'react-redux';
 import Loader from '../components/global/Loader';
 
 function Confirmation() {
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
-  const auth = useSelector((state) => state.auth);
   const orderId = searchParams.get('orderid');
   console.log(orderId);
   const [order, setOrder] = useState({ loading: true });
@@ -140,7 +138,7 @@ function Confirmation() {
                   />
                   <path d="M3 7L12 13L21 7" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <p className="cursor-pointer text-sm leading-5">{auth.currentUser.email}</p>
+                <p className="cursor-pointer text-sm leading-5">{order.email}</p>
               </div>
             </div>
             <div className="flex justify-between xl:h-full items-stretch w-full flex-col mt-6 md:mt-0">

@@ -27,10 +27,10 @@ export default async function handler(request, response) {
 async function onCheckoutSessionCompleted(session) {
   const purchaseSessionId = session.client_reference_id;
   const { userId, orderId } = await getDocData(`purchaseSessions/${purchaseSessionId}`);
-  await markOrderComplete(userId, orderId, purchaseSessionId, session.customer);
+  await markOrderComplete(purchaseSessionId, orderId, userId, session.customer);
 }
 
-async function markOrderComplete(userId, orderId, purchaseSessionId, stripeCustomerId) {
+async function markOrderComplete(purchaseSessionId, orderId, userId, stripeCustomerId) {
   const batch = db.batch();
   const purchaseSession = db.doc(`purchaseSessions/${purchaseSessionId}`);
   batch.update(purchaseSession, { status: 'completed' });

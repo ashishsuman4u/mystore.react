@@ -47,7 +47,7 @@ export default async function handler(request, response) {
             product: { ...product, images: product.images.split(',') },
           };
         });
-        await saveOrder(order, orderItems, request.body);
+        await saveOrder(order, orderItems, request.body, user.email);
         const sessionConfig = setupPurchaseSession(
           user,
           orderItems,
@@ -70,9 +70,10 @@ export default async function handler(request, response) {
   }
 }
 
-async function saveOrder(order, orderItems, reqBody) {
+async function saveOrder(order, orderItems, reqBody, email) {
   const orderData = {
     items: orderItems,
+    email,
     shippingAddress: reqBody.address,
     shippingType: reqBody.shippingType,
     shippingValue:
@@ -109,6 +110,7 @@ function setupPurchaseSession(user, orderItems, reqBody, sessionId, stripeCustom
 function setupBaseSessionConfig(user, reqBody, sessionId) {
   const config = {
     customer_email: user.email,
+    customer_creation: 'always',
     payment_method_types: ['card'],
     success_url: `${process.env.STRIPE_CALLBACK_URL}/?purchaseResult=success&ongoingPurchaseSessionId=${sessionId}`,
     cancel_url: `${process.env.STRIPE_CALLBACK_URL}/?purchaseResult=failed`,
