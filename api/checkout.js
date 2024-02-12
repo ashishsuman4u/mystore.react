@@ -79,6 +79,7 @@ async function saveOrder(order, orderItems, reqBody, user) {
     totalValue: orderItems.reduce((sum, item) => {
       return sum + item.product.price * item.quantity;
     }, 0),
+    orderDate: Date.now(),
   };
   await order.set(orderData);
 }

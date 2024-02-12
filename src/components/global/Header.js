@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaShoppingCart, FaRegUser, FaPowerOff } from 'react-icons/fa';
 import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
-import { signout } from '../../store';
+import { signIn, signout } from '../../store';
 import { clearStorage } from '../../sessionStorage';
 import { saveData } from '../../helpers';
 
@@ -14,10 +14,15 @@ function Header() {
   const cart = useSelector((state) => {
     return state.cart;
   });
-
   const authUser = useSelector((state) => {
     return state.auth;
   });
+
+  useEffect(() => {
+    if (!authUser.currentUser && auth.currentUser) {
+      dispatch(signIn(auth.currentUser));
+    }
+  }, [authUser.currentUser, dispatch]);
 
   const handleSignOut = async (e) => {
     e.preventDefault();
