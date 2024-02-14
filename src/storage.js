@@ -1,7 +1,7 @@
 //To use session storage with redux state.
 export const loadState = () => {
   try {
-    const serializedState = sessionStorage.getItem('state');
+    const serializedState = localStorage.getItem('state');
     if (serializedState === null) {
       return undefined;
     }
@@ -15,9 +15,9 @@ export const saveState = (state) => {
   try {
     if (state) {
       const serializedState = JSON.stringify(state);
-      sessionStorage.setItem('state', serializedState);
+      localStorage.setItem('state', serializedState);
     } else {
-      sessionStorage.removeItem('state');
+      localStorage.removeItem('state');
     }
   } catch (err) {
     //Do nothing for now.
@@ -26,5 +26,5 @@ export const saveState = (state) => {
 };
 
 export const clearStorage = () => {
-  sessionStorage.removeItem('state');
+  localStorage.removeItem('state');
 };

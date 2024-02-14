@@ -4,15 +4,15 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { auth } from '../../config/firebase';
 import { useSelector, useDispatch } from 'react-redux';
-import { initialiseCartFromDB, signIn } from '../../store';
-import { fetchData } from '../../helpers';
+import { initialiseCartFromDB, populateOrder, signIn, updateAddress } from '../../store';
+import { fetchAllUserData, fetchData } from '../../helpers';
 
 function SignIn() {
-  const authUser = useSelector((state) => state.auth);
+  const user = useSelector((state) => state.user);
   const navigate = useNavigate();
   let location = useLocation();
   useEffect(() => {
-    if (authUser.currentUser && !location.state) {
+    if (user.currentUser && !location.state) {
       navigate('/', { replace: true });
     }
   });
@@ -26,6 +26,14 @@ function SignIn() {
       const cartItems = await fetchData('carts', result.user.uid, 'items');
       if (cartItems) {
         dispatch(initialiseCartFromDB(cartItems));
+      }
+      const orders = await fetchAllUserData('orders', result.user.uid);
+      if (orders) {
+        dispatch(populateOrder(orders));
+      }
+      const userData = await fetchData('users', result.user.uid, 'address');
+      if (userData) {
+        dispatch(updateAddress(userData));
       }
       navigate(location.state && location.state.returnUrl ? location.state.returnUrl : '/', { replace: true });
     } catch (error) {

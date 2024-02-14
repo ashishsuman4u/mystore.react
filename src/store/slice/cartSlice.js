@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import * as _ from 'lodash';
-import { signout } from '../actions/index';
+import { signout, updateAddress } from '../actions/index';
 
 // const cartObj = {
 //   items: [
@@ -102,9 +102,6 @@ const cartSlice = createSlice({
         return sum + item.product.price * item.quantity;
       }, 0);
     },
-    updateAddress(state, action) {
-      state.shippingAddress = action.payload;
-    },
     updateShipping(state, action) {
       state.shippingType = action.payload;
       state.shippingValue =
@@ -119,6 +116,9 @@ const cartSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(signout, () => initialState);
+    builder.addCase(updateAddress, (state, action) => {
+      state.shippingAddress = action.payload;
+    });
   },
 });
 
@@ -127,7 +127,6 @@ export const {
   initialiseCartFromDB,
   removeItemFromCart,
   updateQuantityInCart,
-  updateAddress,
   updateShipping,
   updateOrderId,
   resetCart,

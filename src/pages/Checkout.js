@@ -6,8 +6,8 @@ import Steps from '../components/checkout/Steps';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateAddress, updateOrderId, updateShipping } from '../store';
 import RedirectToShop from '../components/modal/RedirectToShop';
-import { fetchData, generateCheckoutSession, saveData } from '../helpers';
-import { removeData } from '../helpers/firestore';
+import { generateCheckoutSession, saveData } from '../helpers';
+import { removeData } from '../helpers';
 
 function Checkout() {
   const [showShipping, setShowShipping] = useState(true);
@@ -15,17 +15,10 @@ function Checkout() {
   const cart = useSelector((state) => {
     return state.cart;
   });
-  const auth = useSelector((state) => {
-    return state.auth;
+  const user = useSelector((state) => {
+    return state.user;
   });
   const [showModal] = useState(cart.items.length === 0);
-  if (auth.currentUser && !cart.shippingAddress?.fullName) {
-    fetchData('users', auth.currentUser.uid, 'address').then((address) => {
-      if (address) {
-        dispatch(updateAddress(address));
-      }
-    });
-  }
 
   const redirectToCheckout = async (userId, orderId) => {
     const session = await generateCheckoutSession({
@@ -40,7 +33,7 @@ function Checkout() {
     });
     if (session) {
       dispatch(updateOrderId(session.orderId));
-      await removeData('carts', auth.currentUser.uid);
+      await removeData('carts', user.currentUser.uid);
       const stripe = window.Stripe(session.stripePublicKey);
       stripe.redirectToCheckout({
         sessionId: session.stripeCheckoutSessionId,
@@ -53,9 +46,9 @@ function Checkout() {
     setShowShipping(false);
     dispatch(updateAddress(address));
     if (address.saveAddress === 'yes') {
-      await saveData('users', auth.currentUser.uid, { ...auth.currentUser, address });
+      await saveData('users', user.currentUser.uid, { ...user.currentUser, address });
     }
-    await redirectToCheckout(auth.currentUser.uid, cart.orderId);
+    await redirectToCheckout(user.currentUser.uid, cart.orderId);
   };
 
   const handleShipping = async (shippingType) => {

@@ -4,14 +4,14 @@ import { useEffect } from 'react';
 
 const ProtectedRoute = ({ path, children }) => {
   const navigate = useNavigate();
-  const auth = useSelector((state) => state.auth);
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (!auth.currentUser) {
+    if (!user.currentUser) {
       // user is not authenticated
       navigate('/login', { state: { returnUrl: path } });
     }
-  }, [auth.currentUser, navigate, path]);
+  }, [user.currentUser, navigate, path]);
 
   return children;
 };

@@ -11,15 +11,38 @@ import ProtectedRoute from './ProtectedRoute';
 import PaymentProcessor from './pages/PaymentProcessor';
 import Confirmation from './pages/Confirmation';
 import NotFound from './pages/NotFound';
+import Dashboard from './pages/User/Dashboard';
+import InnerLayout from './InnerLayout';
+import Orders from './pages/User/Orders';
+import Profile from './pages/User/Profile';
 
 export const routeConfiguration = [
   {
     name: 'Dashboard',
     path: '/dashboard',
-    component: <Home />,
+    component: <Dashboard />,
     isDynamicRoute: false,
     isAuthenticated: true,
     isFullScreen: false,
+    isPublic: false,
+  },
+  {
+    name: 'Orders',
+    path: '/orders',
+    component: <Orders />,
+    isDynamicRoute: false,
+    isAuthenticated: true,
+    isFullScreen: false,
+    isPublic: false,
+  },
+  {
+    name: 'Profile',
+    path: '/profile',
+    component: <Profile />,
+    isDynamicRoute: false,
+    isAuthenticated: true,
+    isFullScreen: false,
+    isPublic: false,
   },
   {
     name: 'Not Found',
@@ -28,6 +51,7 @@ export const routeConfiguration = [
     isDynamicRoute: false,
     isAuthenticated: false,
     isFullScreen: true,
+    isPublic: true,
   },
   {
     name: 'Payment Processing',
@@ -36,6 +60,7 @@ export const routeConfiguration = [
     isDynamicRoute: false,
     isAuthenticated: true,
     isFullScreen: true,
+    isPublic: true,
   },
   {
     name: 'Confirm Order',
@@ -44,6 +69,7 @@ export const routeConfiguration = [
     isDynamicRoute: false,
     isAuthenticated: true,
     isFullScreen: true,
+    isPublic: true,
   },
   {
     name: 'Support',
@@ -52,6 +78,7 @@ export const routeConfiguration = [
     isDynamicRoute: false,
     isAuthenticated: false,
     isFullScreen: false,
+    isPublic: true,
   },
   {
     name: 'Terms',
@@ -60,6 +87,7 @@ export const routeConfiguration = [
     isDynamicRoute: false,
     isAuthenticated: false,
     isFullScreen: false,
+    isPublic: true,
   },
   {
     name: 'Privacy',
@@ -68,6 +96,7 @@ export const routeConfiguration = [
     isDynamicRoute: false,
     isAuthenticated: false,
     isFullScreen: false,
+    isPublic: true,
   },
   {
     name: 'Login',
@@ -76,6 +105,7 @@ export const routeConfiguration = [
     isDynamicRoute: false,
     isAuthenticated: false,
     isFullScreen: true,
+    isPublic: true,
   },
   {
     name: 'Cart',
@@ -84,6 +114,7 @@ export const routeConfiguration = [
     isDynamicRoute: false,
     isAuthenticated: false,
     isFullScreen: false,
+    isPublic: true,
   },
   {
     name: 'Checkout',
@@ -92,6 +123,7 @@ export const routeConfiguration = [
     isDynamicRoute: false,
     isAuthenticated: true,
     isFullScreen: false,
+    isPublic: true,
   },
   {
     name: 'Product',
@@ -100,6 +132,7 @@ export const routeConfiguration = [
     isDynamicRoute: true,
     isAuthenticated: false,
     isFullScreen: false,
+    isPublic: true,
   },
   {
     name: 'Home',
@@ -108,20 +141,32 @@ export const routeConfiguration = [
     isDynamicRoute: false,
     isAuthenticated: false,
     isFullScreen: true,
+    isPublic: true,
   },
 ];
 
 export default createBrowserRouter(
   routeConfiguration.map((config) => {
     if (config.isAuthenticated) {
-      return {
-        path: config.path,
-        element: (
-          <Layout hideBreadcrumb={config.isFullScreen}>
-            <ProtectedRoute path={config.path}>{config.component}</ProtectedRoute>
-          </Layout>
-        ),
-      };
+      if (config.isPublic) {
+        return {
+          path: config.path,
+          element: (
+            <Layout hideBreadcrumb={config.isFullScreen}>
+              <ProtectedRoute path={config.path}>{config.component}</ProtectedRoute>
+            </Layout>
+          ),
+        };
+      } else {
+        return {
+          path: config.path,
+          element: (
+            <InnerLayout selectedNav={config.path.replace('/', '')} hideBreadcrumb={config.isFullScreen}>
+              <ProtectedRoute path={config.path}>{config.component}</ProtectedRoute>
+            </InnerLayout>
+          ),
+        };
+      }
     } else {
       return {
         path: config.path,

@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { signout } from '../actions';
+import { signout, updateAddress } from '../actions';
+import { upsert } from '../../helpers';
 
-// const authObj = {
+// const userObj = {
 //   authenticated: true | false,
 //   currentUser: {
 //     email: 'testuser1@test.com', // string | null
@@ -9,15 +10,17 @@ import { signout } from '../actions';
 //     displayName: 'test user', // string | null
 //     providerId: 'firebase', // string | null
 //   },
+//   orders: []
 // };
 
 const initialState = {
   authenticated: false,
   currentUser: null,
+  orders: [],
 };
 
-export const authSlice = createSlice({
-  name: 'auth',
+export const userSlice = createSlice({
+  name: 'user',
   initialState,
   reducers: {
     signIn: {
@@ -29,17 +32,25 @@ export const authSlice = createSlice({
         const mapped = {
           uid: user.uid,
           email: user.email,
-          displayName: user.displayName,
           providerId: user.providerData[0].providerId,
         };
         return { payload: mapped };
       },
     },
+    populateOrder(state, action) {
+      state.orders = action.payload.sort((a, b) => b.orderDate - a.orderDate);
+    },
+    addOrder(state, action) {
+      upsert(state.orders, action.payload);
+    },
   },
   extraReducers(builder) {
     builder.addCase(signout, () => initialState);
+    builder.addCase(updateAddress, (state, action) => {
+      state.address = action.payload;
+    });
   },
 });
 
-export const { signIn, logout } = authSlice.actions;
-export const authReducer = authSlice.reducer;
+export const { signIn, populateOrder, addOrder } = userSlice.actions;
+export const userReducer = userSlice.reducer;

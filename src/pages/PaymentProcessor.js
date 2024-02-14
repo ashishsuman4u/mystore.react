@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { getRealtimeUpdate } from '../helpers/firestore';
+import { getRealtimeUpdate } from '../helpers';
 import { resetCart } from '../store';
 import { useDispatch } from 'react-redux';
 import Loader from '../components/global/Loader';

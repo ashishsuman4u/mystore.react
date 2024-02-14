@@ -3,8 +3,8 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import { productApiSlice } from './apis/productApi';
 import { categoryApiSlice } from './apis/categoryApi';
 import { cartReducer } from './slice/cartSlice';
-import { authReducer } from './slice/authSlice';
-import { loadState, saveState } from '../sessionStorage';
+import { userReducer } from './slice/userSlice';
+import { loadState, saveState } from '../storage';
 
 const initialState = loadState();
 
@@ -13,7 +13,7 @@ export const store = configureStore({
     [productApiSlice.reducerPath]: productApiSlice.reducer,
     [categoryApiSlice.reducerPath]: categoryApiSlice.reducer,
     cart: cartReducer,
-    auth: authReducer,
+    user: userReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(productApiSlice.middleware).concat(categoryApiSlice.middleware);
@@ -33,10 +33,9 @@ export {
   initialiseCartFromDB,
   removeItemFromCart,
   updateQuantityInCart,
-  updateAddress,
   updateShipping,
   updateOrderId,
   resetCart,
 } from './slice/cartSlice';
-export { signIn, logout } from './slice/authSlice';
-export { signout } from './actions';
+export { signIn, populateOrder, addOrder } from './slice/userSlice';
+export { signout, updateAddress } from './actions';

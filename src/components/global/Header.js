@@ -5,7 +5,7 @@ import { FaShoppingCart, FaRegUser, FaPowerOff } from 'react-icons/fa';
 import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
 import { signIn, signout } from '../../store';
-import { clearStorage } from '../../sessionStorage';
+import { clearStorage } from '../../storage';
 import { saveData } from '../../helpers';
 
 function Header() {
@@ -14,15 +14,15 @@ function Header() {
   const cart = useSelector((state) => {
     return state.cart;
   });
-  const authUser = useSelector((state) => {
-    return state.auth;
+  const user = useSelector((state) => {
+    return state.user;
   });
 
   useEffect(() => {
-    if (!authUser.currentUser && auth.currentUser) {
+    if (!user.currentUser && auth.currentUser) {
       dispatch(signIn(auth.currentUser));
     }
-  }, [authUser.currentUser, dispatch]);
+  }, [user.currentUser, dispatch]);
 
   const handleSignOut = async (e) => {
     e.preventDefault();
@@ -48,7 +48,7 @@ function Header() {
         <Link to="/dashboard">
           <FaRegUser />
         </Link>
-        {authUser.authenticated && (
+        {user.authenticated && (
           <button onClick={handleSignOut}>
             <FaPowerOff />
           </button>

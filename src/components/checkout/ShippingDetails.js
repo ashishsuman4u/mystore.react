@@ -28,7 +28,7 @@ function ShippingDetails({ cart, handleAddress }) {
             id="fullName"
             name="fullName"
             className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-            placeholder="John Doe"
+            placeholder="e.g. John Doe"
             {...register('fullName', { required: true, maxLength: 50 })}
           />
           <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
@@ -93,6 +93,7 @@ function ShippingDetails({ cart, handleAddress }) {
               type="text"
               name="state"
               id="state"
+              placeholder="e.g. NY"
               className="w-full rounded-md border border-gray-200 px-4 py-3 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
               {...register('state', { required: true, maxLength: 100 })}
             />
@@ -106,7 +107,7 @@ function ShippingDetails({ cart, handleAddress }) {
               name="zip"
               id="zip"
               className="w-full rounded-md border border-gray-200 px-4 py-3 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-              placeholder="10001"
+              placeholder="e.g. 10001"
               {...register('zip', {
                 required: true,
                 minLength: 4,
