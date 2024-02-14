@@ -1,5 +1,5 @@
-import products from '../dataset/products.json';
-import categories from '../dataset/categories.json';
+import products from '../../dataset/products.json';
+import categories from '../../dataset/categories.json';
 
 export default async function handler(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);

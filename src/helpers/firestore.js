@@ -8,6 +8,7 @@ import {
   onSnapshot,
   query,
   setDoc,
+  updateDoc,
   where,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
@@ -27,9 +28,17 @@ export const fetchData = async (collectionName, id, data) => {
   }
 };
 
-export const saveData = async (collectionName, id, data) => {
+export const saveData = async (collectionName, id, data, merge = true) => {
   try {
-    await setDoc(doc(db, collectionName, id), { ...data, timestamp: Timestamp.now() }, { merge: true });
+    await setDoc(doc(db, collectionName, id), { ...data, timestamp: Timestamp.now() }, { merge });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateCollectionData = async (collectionName, id, data) => {
+  try {
+    await updateDoc(doc(db, collectionName, id), { ...data });
   } catch (error) {
     console.log(error);
   }

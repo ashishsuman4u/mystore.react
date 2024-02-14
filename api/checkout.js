@@ -36,7 +36,7 @@ export default async function handler(request, response) {
           created: Timestamp.now(),
           userId: request.body.userId,
           orderId: order.id,
-          stripeCustomerId: user.stripeCustomerId,
+          stripeCustomerId: user.stripeCustomerId ?? '',
         };
 
         await purchaseSession.set(checkoutSessionData);

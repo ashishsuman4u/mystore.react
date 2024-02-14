@@ -10,13 +10,15 @@ import { upsert } from '../../helpers';
 //     displayName: 'test user', // string | null
 //     providerId: 'firebase', // string | null
 //   },
-//   orders: []
+//   orders: [],
+//   wishlist: []
 // };
 
 const initialState = {
   authenticated: false,
   currentUser: null,
   orders: [],
+  wishlist: [],
 };
 
 export const userSlice = createSlice({
@@ -40,8 +42,18 @@ export const userSlice = createSlice({
     populateOrder(state, action) {
       state.orders = action.payload.sort((a, b) => b.orderDate - a.orderDate);
     },
+    populateWishlist(state, action) {
+      state.wishlist = action.payload;
+    },
     addOrder(state, action) {
       upsert(state.orders, action.payload);
+    },
+    addWishlistItem(state, action) {
+      upsert(state.wishlist, action.payload);
+    },
+    removeWishlistItem(state, action) {
+      const index = state.wishlist.findIndex((s) => s.id === action.payload.id);
+      state.wishlist.splice(index, 1);
     },
   },
   extraReducers(builder) {
@@ -52,5 +64,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { signIn, populateOrder, addOrder } = userSlice.actions;
+export const { signIn, populateOrder, addOrder, addWishlistItem, removeWishlistItem, populateWishlist } =
+  userSlice.actions;
 export const userReducer = userSlice.reducer;

@@ -20,14 +20,14 @@ function Checkout() {
   });
   const [showModal] = useState(cart.items.length === 0);
 
-  const redirectToCheckout = async (userId, orderId) => {
+  const redirectToCheckout = async (userId, orderId, address) => {
     const session = await generateCheckoutSession({
       items: cart.items.map((item) => {
         return { id: item.id, quantity: item.quantity };
       }),
       callbackUrl: 'payment-processing',
       shippingType: cart.shippingType,
-      address: cart.shippingAddress,
+      address,
       userId,
       orderId,
     });
@@ -48,7 +48,7 @@ function Checkout() {
     if (address.saveAddress === 'yes') {
       await saveData('users', user.currentUser.uid, { ...user.currentUser, address });
     }
-    await redirectToCheckout(user.currentUser.uid, cart.orderId);
+    await redirectToCheckout(user.currentUser.uid, cart.orderId, address);
   };
 
   const handleShipping = async (shippingType) => {

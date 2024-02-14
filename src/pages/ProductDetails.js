@@ -1,16 +1,33 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaFacebookF, FaTwitter, FaInstagram, FaShoppingCart, FaHeart } from 'react-icons/fa';
-import { useFetchProductByIDQuery } from '../store';
+import { addWishlistItem, removeWishlistItem, useFetchProductByIDQuery } from '../store';
+import Loader from '../components/global/Loader';
+import ErrorPage from '../components/error/ErrorPage';
+import { useDispatch, useSelector } from 'react-redux';
 
 function ProductDetails() {
   let { id } = useParams();
+  const user = useSelector((state) => state.user);
+  const isWishListed = user.wishlist.find((w) => w.id === id);
+  const dispatch = useDispatch();
   const [currentImage, setCurrentImage] = useState('');
+  const handleWishlisting = async (product) => {
+    if (isWishListed) {
+      dispatch(removeWishlistItem(product));
+    } else {
+      dispatch(addWishlistItem(product));
+    }
+  };
   const { data, error, isFetching } = useFetchProductByIDQuery(id);
   if (isFetching) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex align-middle items-center w-full justify-center h-screen">
+        <Loader />
+      </div>
+    );
   } else if (error) {
-    return <div>Error...</div>;
+    return <ErrorPage error={error} />;
   }
   return (
     <main className="text-black body-font overflow-hidden">
@@ -56,12 +73,19 @@ function ProductDetails() {
             </div>
             <p className="leading-relaxed">{data.description}</p>
             <div className="flex mt-6 justify-between items-center pb-5 border-b-2 border-gray-100 mb-5">
-              <div className="flex items-center">
-                <span>Add to Wishlist</span>
-                <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
-                  <FaHeart />
-                </button>
-              </div>
+              {user.authenticated && (
+                <div className="flex items-center">
+                  {isWishListed ? <span>Remove from Wishlist</span> : <span>Add to Wishlist</span>}
+                  <button
+                    onClick={() => handleWishlisting(data)}
+                    className={`rounded-full w-10 h-10 p-0 border-0 inline-flex items-center justify-center ${
+                      isWishListed ? 'text-red-500 bg-red-200' : 'text-gray-500 bg-gray-200'
+                    } ml-4`}
+                  >
+                    <FaHeart />
+                  </button>
+                </div>
+              )}
             </div>
             <div className="flex">
               <span className="title-font font-medium text-2xl text-gray-900">${data.price}</span>

@@ -6,7 +6,7 @@ import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
 import { signIn, signout } from '../../store';
 import { clearStorage } from '../../storage';
-import { saveData } from '../../helpers';
+import { saveData, updateCollectionData } from '../../helpers';
 
 function Header() {
   const navigate = useNavigate();
@@ -29,6 +29,9 @@ function Header() {
 
     if (cart.items.length > 0) {
       await saveData('carts', auth.currentUser.uid, { items: cart.items });
+    }
+    if (user.wishlist.length > 0) {
+      await updateCollectionData('users', auth.currentUser.uid, { wishlist: user.wishlist });
     }
     await signOut(auth);
     dispatch(signout());

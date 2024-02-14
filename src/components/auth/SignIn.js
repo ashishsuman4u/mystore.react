@@ -1,10 +1,10 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { auth } from '../../config/firebase';
 import { useSelector, useDispatch } from 'react-redux';
-import { initialiseCartFromDB, populateOrder, signIn, updateAddress } from '../../store';
+import { initialiseCartFromDB, populateOrder, populateWishlist, signIn, updateAddress } from '../../store';
 import { fetchAllUserData, fetchData } from '../../helpers';
 
 function SignIn() {
@@ -12,40 +12,57 @@ function SignIn() {
   const navigate = useNavigate();
   let location = useLocation();
   useEffect(() => {
-    if (user.currentUser && !location.state) {
-      navigate('/', { replace: true });
+    if (user.currentUser) {
+      navigate(location.state ?? '/', { replace: true });
+    } else if (!user.currentUser && auth.currentUser) {
+      dispatch(signIn(auth.currentUser));
+      navigate(location.state ?? '/', { replace: true });
     }
   });
+
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    await handleSignIn(result);
+  };
 
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
     try {
       const result = await signInWithEmailAndPassword(auth, data.email, data.password);
-      dispatch(signIn(result.user));
-      const cartItems = await fetchData('carts', result.user.uid, 'items');
-      if (cartItems) {
-        dispatch(initialiseCartFromDB(cartItems));
-      }
-      const orders = await fetchAllUserData('orders', result.user.uid);
-      if (orders) {
-        dispatch(populateOrder(orders));
-      }
-      const userData = await fetchData('users', result.user.uid, 'address');
-      if (userData) {
-        dispatch(updateAddress(userData));
-      }
-      navigate(location.state && location.state.returnUrl ? location.state.returnUrl : '/', { replace: true });
+      await handleSignIn(result);
     } catch (error) {
       console.log(error);
       //TODO - Show errors
     }
   };
+
+  async function handleSignIn(result) {
+    dispatch(signIn(result.user));
+    const cartItems = await fetchData('carts', result.user.uid, 'items');
+    if (cartItems) {
+      dispatch(initialiseCartFromDB(cartItems));
+    }
+    const orders = await fetchAllUserData('orders', result.user.uid);
+    if (orders) {
+      dispatch(populateOrder(orders));
+    }
+    const userData = await fetchData('users', result.user.uid);
+    if (userData) {
+      dispatch(updateAddress(userData.address));
+      dispatch(populateWishlist(userData.wishlist));
+    }
+    navigate(location.state && location.state.returnUrl ? location.state.returnUrl : '/', { replace: true });
+  }
   return (
     <div className="lg:w-[28rem] mx-auto my-auto flex flex-col justify-center pt-8 md:justify-start md:px-6">
       <h2 className="mt-2 text-center text-black text-2xl font-bold">Welcome to My Store</h2>
       <p className="mt-2 text-center text-black">please enter your details.</p>
-      <button className="-2 mt-8 flex items-center justify-center rounded-md border px-4 py-1 outline-none ring-gray-400 ring-offset-2 transition focus:ring-2 hover:border-transparent hover:bg-black hover:text-white">
+      <button
+        onClick={handleGoogleLogin}
+        className="-2 mt-8 flex items-center justify-center rounded-md border px-4 py-1 outline-none ring-gray-400 ring-offset-2 transition focus:ring-2 hover:border-transparent hover:bg-black hover:text-white"
+      >
         <img className="mr-2 h-5" src="https://static.cdnlogo.com/logos/g/35/google-icon.svg" alt="Google Logo" /> Sign
         in with Google
       </button>

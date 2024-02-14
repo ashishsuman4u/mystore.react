@@ -37,5 +37,12 @@ export {
   updateOrderId,
   resetCart,
 } from './slice/cartSlice';
-export { signIn, populateOrder, addOrder } from './slice/userSlice';
+export {
+  signIn,
+  populateOrder,
+  addOrder,
+  addWishlistItem,
+  removeWishlistItem,
+  populateWishlist,
+} from './slice/userSlice';
 export { signout, updateAddress } from './actions';
