@@ -19,30 +19,37 @@ function Checkout() {
     return state.user;
   });
   const [showModal] = useState(cart.items.length === 0);
+  const [checkoutInProgress, setCheckoutInProgress] = useState(false);
 
   const redirectToCheckout = async (userId, orderId, address) => {
-    const session = await generateCheckoutSession({
-      items: cart.items.map((item) => {
-        return { id: item.id, quantity: item.quantity };
-      }),
-      callbackUrl: 'payment-processing',
-      shippingType: cart.shippingType,
-      address,
-      userId,
-      orderId,
-    });
-    if (session) {
-      dispatch(updateOrderId(session.orderId));
-      await removeData('carts', user.currentUser.uid);
-      const stripe = window.Stripe(session.stripePublicKey);
-      stripe.redirectToCheckout({
-        sessionId: session.stripeCheckoutSessionId,
+    try {
+      const session = await generateCheckoutSession({
+        items: cart.items.map((item) => {
+          return { id: item.id, quantity: item.quantity };
+        }),
+        callbackUrl: 'payment-processing',
+        shippingType: cart.shippingType,
+        address,
+        userId,
+        orderId,
       });
+      if (session) {
+        dispatch(updateOrderId(session.orderId));
+        await removeData('carts', user.currentUser.uid);
+        const stripe = window.Stripe(session.stripePublicKey);
+        stripe.redirectToCheckout({
+          sessionId: session.stripeCheckoutSessionId,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setCheckoutInProgress(false);
     }
   };
 
   const handleAddress = async (address) => {
-    console.log('address', address);
+    setCheckoutInProgress(true);
     setShowShipping(false);
     dispatch(updateAddress(address));
     if (address.saveAddress === 'yes') {
@@ -71,7 +78,12 @@ function Checkout() {
             <ShippingMethods cart={cart} handleChange={handleShipping} />
           </div>
           <div className="mt-10 bg-gray-50 px-4 pt-8 lg:mt-0 lg:w-1/2">
-            <ShippingDetails cart={cart} handleAddress={handleAddress} setShowShipping={setShowShipping} />
+            <ShippingDetails
+              cart={cart}
+              handleAddress={handleAddress}
+              setShowShipping={setShowShipping}
+              checkoutInProgress={checkoutInProgress}
+            />
           </div>
         </div>
       </main>

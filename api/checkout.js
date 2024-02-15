@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 import products from '../dataset/products.json';
-import { db, getDocData } from '../lib/db';
-import { Timestamp } from '@google-cloud/firestore';
+import { db, getDocData, verifyIdToken } from '../lib/db';
+import { Timestamp } from 'firebase-admin/firestore';
 
 const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -20,41 +20,46 @@ const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
 export default async function handler(request, response) {
   try {
     if (request.method === 'POST') {
-      let order = null;
-      if (request.body.orderId) {
-        order = await getDocData(`orders/${request.body.orderId}`);
-      }
-      if (!order) {
-        order = await db.collection('orders').doc();
-      }
-      const user = await getDocData(`users/${request.body.userId}`);
-      if (user && order) {
-        const purchaseSession = await db.collection('purchaseSessions').doc();
+      const result = await verifyIdToken(request.headers.authorization);
+      if (result.uid === request.body.userId) {
+        let order = null;
+        if (request.body.orderId) {
+          order = await getDocData(`orders/${request.body.orderId}`);
+        }
+        if (!order) {
+          order = await db.collection('orders').doc();
+        }
+        const user = await getDocData(`users/${request.body.userId}`);
+        if (user && order) {
+          const purchaseSession = await db.collection('purchaseSessions').doc();
 
-        const checkoutSessionData = {
-          status: 'ongoing',
-          created: Timestamp.now(),
-          userId: request.body.userId,
-          orderId: order.id,
-          stripeCustomerId: user.stripeCustomerId ?? '',
-        };
-
-        await purchaseSession.set(checkoutSessionData);
-        const orderItems = request.body.items.map((item) => {
-          const product = products.find((p) => p.id === item.id);
-          return {
-            ...item,
-            product: { ...product, images: product.images.split(',') },
+          const checkoutSessionData = {
+            status: 'ongoing',
+            created: Timestamp.now(),
+            userId: request.body.userId,
+            orderId: order.id,
+            stripeCustomerId: user.stripeCustomerId ?? '',
           };
-        });
-        await saveOrder(order, orderItems, request.body, user);
-        const sessionConfig = setupPurchaseSession(user, orderItems, request.body, purchaseSession.id);
-        const session = await stripeClient.checkout.sessions.create(sessionConfig);
 
-        return response.status(200).json({
-          stripeCheckoutSessionId: session.id,
-          stripePublicKey: process.env.STRIPE_PUBLIC_KEY,
-        });
+          await purchaseSession.set(checkoutSessionData);
+          const orderItems = request.body.items.map((item) => {
+            const product = products.find((p) => p.id === item.id);
+            return {
+              ...item,
+              product: { ...product, images: product.images.split(',') },
+            };
+          });
+          await saveOrder(order, orderItems, request.body, user);
+          const sessionConfig = setupPurchaseSession(user, orderItems, request.body, purchaseSession.id);
+          const session = await stripeClient.checkout.sessions.create(sessionConfig);
+
+          return response.status(200).json({
+            stripeCheckoutSessionId: session.id,
+            stripePublicKey: process.env.STRIPE_PUBLIC_KEY,
+          });
+        }
+      } else {
+        return response.status(401).json({ message: 'Unauthorized' });
       }
     }
     return response.status(400).json({ message: 'Bad Request' });

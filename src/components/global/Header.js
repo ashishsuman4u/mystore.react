@@ -27,10 +27,10 @@ function Header() {
   const handleSignOut = async (e) => {
     e.preventDefault();
 
-    if (cart.items.length > 0) {
+    if (cart && cart.items && cart.items.length > 0) {
       await saveData('carts', auth.currentUser.uid, { items: cart.items });
     }
-    if (user.wishlist.length > 0) {
+    if (user && user.wishlist && user.wishlist.length > 0) {
       await updateCollectionData('users', auth.currentUser.uid, { wishlist: user.wishlist });
     }
     await signOut(auth);

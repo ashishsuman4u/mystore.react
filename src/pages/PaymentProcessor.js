@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { getRealtimeUpdate } from '../helpers';
 import { resetCart } from '../store';
@@ -12,14 +12,19 @@ function PaymentProcessor() {
   let [searchParams] = useSearchParams();
   const purchaseSession = searchParams.get('ongoingPurchaseSessionId');
   const purchaseResult = searchParams.get('purchaseResult');
+  useEffect(() => {
+    if (purchaseResult === 'failed') {
+      navigate('/checkout');
+    }
+  });
   if (purchaseResult === 'success' && !currentPurchaseSession) {
-    console.log(purchaseSession);
     getRealtimeUpdate('purchaseSessions', purchaseSession, setCurrentPurchaseSession);
     dispatch(resetCart());
   }
   if (currentPurchaseSession) {
     navigate(`/confirmation/?orderid=${currentPurchaseSession.orderId}`);
   }
+
   return (
     <main className="flex flex-col items-center justify-center h-screen">
       <h2 className="text-2xl font-semibold pb-8 px-4 md:px-12 text-center">
