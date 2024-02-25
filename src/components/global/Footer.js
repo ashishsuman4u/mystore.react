@@ -27,6 +27,12 @@ function Footer() {
           </a>
         </span>
       </div>
+      <p className="text-center py-4">
+        Designed & Developed by{' '}
+        <a rel="noreferrer" href="https://www.ashishsuman.co" target="_blank">
+          Ashish Suman
+        </a>
+      </p>
     </footer>
   );
 }
