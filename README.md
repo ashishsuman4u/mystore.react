@@ -21,6 +21,12 @@ https://mystore-react.vercel.app/
 
 # Test users for testing the websites
 
-testuser1@test.com / P@ssw0rd
-testuser2@test.com / P@ssw0rd
-testuser3@test.com / P@ssw0rd
+- testuser1@test.com / P@ssw0rd
+- testuser2@test.com / P@ssw0rd
+- testuser3@test.com / P@ssw0rd
+
+
+# Pending Tasks and Issues - 
+- Product page add-to-cart fix
+- Unit test
+- Google Analytics integration
