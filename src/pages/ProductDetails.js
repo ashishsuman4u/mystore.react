@@ -1,16 +1,49 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaFacebookF, FaTwitter, FaInstagram, FaShoppingCart, FaHeart } from 'react-icons/fa';
-import { addWishlistItem, removeWishlistItem, useFetchProductByIDQuery } from '../store';
+import {
+  addItemToCart,
+  addWishlistItem,
+  removeItemFromCart,
+  removeWishlistItem,
+  useFetchProductByIDQuery,
+} from '../store';
 import Loader from '../components/global/Loader';
 import ErrorPage from '../components/error/ErrorPage';
 import { useDispatch, useSelector } from 'react-redux';
+import AddToCart from '../components/modal/AddToCart';
 
 function ProductDetails() {
+  const [showModal, setShowModal] = useState(false);
+  const dispatch = useDispatch();
+
+  const cart = useSelector((state) => {
+    return state.cart;
+  });
+
+  const handleClose = () => {
+    setShowModal(false);
+  };
+
+  const handleAddItemToCart = (product, quantity) => {
+    dispatch(addItemToCart(product, quantity));
+    setShowModal(true);
+  };
+
+  const handleRemoveItemToCart = (product) => {
+    dispatch(removeItemFromCart(product));
+    setShowModal(true);
+  };
+  const isItemInCart = (productId) => {
+    const item = cart.items.filter((c) => c.id === productId);
+    return item.length !== 0;
+  };
+  const handleClick = (product) => {
+    isItemInCart(product.id) ? handleRemoveItemToCart(product) : handleAddItemToCart(product, 1);
+  };
   let { id } = useParams();
   const user = useSelector((state) => state.user);
   const isWishListed = user.wishlist.find((w) => w.id === id);
-  const dispatch = useDispatch();
   const [currentImage, setCurrentImage] = useState('');
   const handleWishlisting = async (product) => {
     if (isWishListed) {
@@ -89,13 +122,20 @@ function ProductDetails() {
             </div>
             <div className="flex">
               <span className="title-font font-medium text-2xl text-gray-900">${data.price}</span>
-              <button className="flex gap-4 items-center ml-auto text-white bg-black border-0 py-2 px-6 focus:outline-none hover:bg-gray-800 rounded">
-                <FaShoppingCart className="text-3xl" /> Add to Cart
+              <button
+                className="flex gap-4 items-center ml-auto text-white bg-black border-0 py-2 px-6 focus:outline-none hover:bg-gray-800 rounded"
+                onClick={() => {
+                  handleClick(data);
+                }}
+              >
+                <FaShoppingCart className="text-3xl" />
+                <span className="text-xl">{isItemInCart(data.id) ? 'Remove from Cart' : 'Add to Cart'}</span>
               </button>
             </div>
           </div>
         </div>
       </div>
+      {showModal && <AddToCart handleClose={handleClose} cart={cart} handleRemoveItem={handleRemoveItemToCart} />}
     </main>
   );
 }
