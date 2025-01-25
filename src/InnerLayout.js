@@ -8,14 +8,15 @@ import Sidebar from './components/global/Sidebar';
 function InnerLayout({ selectedNav, hideBreadcrumb, children }) {
   return (
     <ReactErrorBoundary>
-      <Header />
-      {!hideBreadcrumb && <Breadcrumb />}
-      <div className="flex">
-        <Sidebar selectedNav={selectedNav} />
-        {children}
+      <div className="container mx-auto">
+        <Header />
+        {!hideBreadcrumb && <Breadcrumb />}
+        <div className="flex">
+          <Sidebar selectedNav={selectedNav} />
+          {children}
+        </div>
+        <Footer />
       </div>
-
-      <Footer />
     </ReactErrorBoundary>
   );
 }

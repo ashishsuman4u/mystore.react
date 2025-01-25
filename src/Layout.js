@@ -7,10 +7,12 @@ import ReactErrorBoundary from './components/error';
 function Layout({ hideBreadcrumb, children }) {
   return (
     <ReactErrorBoundary>
-      <Header />
-      {!hideBreadcrumb && <Breadcrumb />}
-      {children}
-      <Footer />
+      <div className="container mx-auto">
+        <Header />
+        {!hideBreadcrumb && <Breadcrumb />}
+        {children}
+        <Footer />
+      </div>
     </ReactErrorBoundary>
   );
 }

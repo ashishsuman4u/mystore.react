@@ -25,8 +25,12 @@ https://mystore-react.vercel.app/
 - testuser2@test.com / P@ssw0rd
 - testuser3@test.com / P@ssw0rd
 
+# Pending Tasks and Issues -
 
-# Pending Tasks and Issues - 
 - Product page add-to-cart fix
 - Unit test
 - Google Analytics integration
+
+# Local testing -
+
+I use "vercel dev" to test the application on local as it provide access to vercel function env as well.

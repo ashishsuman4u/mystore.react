@@ -42,8 +42,8 @@ function Footer() {
           </span>
         </div>
       </div>
-      <p className="text-center">
-        Designed & Developed by{' '}
+      <p className="text-center pb-4">
+        This is a test project maintained by{' '}
         <a rel="noreferrer" href="https://www.ashishsuman.co" target="_blank">
           Ashish Suman
         </a>
